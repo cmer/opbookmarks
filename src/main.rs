@@ -137,6 +137,8 @@ fn generate_opbookmarks(account_user_uuids: &Vec<String>, export_path: &std::pat
     // Collect the items for each vault that has changed
     for (account, vaults) in vaults_by_account.iter() {
         for vault in vaults.iter() {
+            println!("Loading items for vault {}", vault.id);
+
             let export_needed =
                 vault.content_version > cache.vault_content_version(&account.id, &vault.id);
             if !export_needed {
@@ -146,6 +148,7 @@ fn generate_opbookmarks(account_user_uuids: &Vec<String>, export_path: &std::pat
             }
 
             let items = load_all_items(&account.id, &vault.id);
+            println!("Finished loading items for vault {}", vault.id);
 
             match items {
                 Ok(items) => {

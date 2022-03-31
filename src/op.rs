@@ -345,6 +345,8 @@ pub fn load_all_items(account_id: &String, vault_id: &String) -> Result<Vec<Item
         .spawn()
         .expect("failed to execute `op` command");
 
+    println!("Before hanging code block");
+
     use std::io::Write;
     item_details_cmd
         .stdin
@@ -352,6 +354,8 @@ pub fn load_all_items(account_id: &String, vault_id: &String) -> Result<Vec<Item
         .expect("Child process stdin has not been captured!")
         .write_all(&json)
         .expect("Failed to write stdin");
+
+    println!("After hanging code block");
 
     let output = item_details_cmd
         .wait_with_output()
@@ -370,6 +374,7 @@ pub fn load_all_items(account_id: &String, vault_id: &String) -> Result<Vec<Item
     let mut items = Vec::new();
 
     while de.end().is_err() {
+        print!(".");
         let item = ItemDetails::deserialize(&mut de);
 
         match item {
@@ -377,6 +382,7 @@ pub fn load_all_items(account_id: &String, vault_id: &String) -> Result<Vec<Item
             Err(err) => eprintln!("Failed to deserialize vault json: {}", err),
         }
     }
+    print!(" - ");
 
     Ok(items)
 }
